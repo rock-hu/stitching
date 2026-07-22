@@ -1,0 +1,105 @@
+name: Android-Build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build type'
+        required: true
+        default: 'release'
+        type: choice
+        options:
+          - debug
+          - release
+
+jobs:
+  android-build:
+    name: Build Android App
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Setup Android signing
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          # Decode keystore
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/release.keystore
+
+          # Create keystore.properties
+          cat > android/keystore.properties << EOF
+          storeFile=release.keystore
+          storePassword=$ANDROID_KEYSTORE_PASSWORD
+          keyAlias=$ANDROID_KEY_ALIAS
+          keyPassword=$ANDROID_KEY_PASSWORD
+          EOF
+
+      - name: Make gradlew executable
+        run: chmod +x android/gradlew
+
+      - name: Build Release APK
+        working-directory: android
+        run: ./gradlew assembleRelease --no-daemon
+
+      - name: Build Release AAB (App Bundle)
+        working-directory: android
+        run: ./gradlew bundleRelease --no-daemon
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk-${{ github.sha }}
+          path: android/app/build/outputs/apk/release/*.apk
+          retention-days: 14
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-aab-${{ github.sha }}
+          path: android/app/build/outputs/bundle/release/*.aab
+          retention-days: 14
+
+      - name: Cleanup signing files
+        if: always()
+        run: |
+          rm -f android/app/release.keystore
+          rm -f android/keystore.properties

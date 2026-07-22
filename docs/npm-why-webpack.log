@@ -1,0 +1,12 @@
+webpack@5.108.4 dev
+node_modules/webpack
+  dev webpack@"^5.108.4" from the root project
+  peerOptional webpack@">=5.61.0" from babel-loader@10.1.1
+  node_modules/babel-loader
+    dev babel-loader@"^10.1.1" from the root project
+  peer webpack@"^5.1.0" from minimizer-webpack-plugin@5.6.1
+  node_modules/minimizer-webpack-plugin
+    minimizer-webpack-plugin@"^5.6.1" from webpack@5.108.4
+  peer webpack@"^5.1.0" from terser-webpack-plugin@5.6.1
+  node_modules/terser-webpack-plugin
+    dev terser-webpack-plugin@"^5.6.1" from the root project
