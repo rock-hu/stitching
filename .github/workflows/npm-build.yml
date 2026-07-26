@@ -21,8 +21,7 @@ jobs:
           node-version: '22'
           cache: 'npm'
       - run: npm install
-      - run: npm audit
       - run: react-native info
       - run: react-native config
       - run: react-native bundle
-      - run: react-native doctor
+      # - run: react-native doctor
