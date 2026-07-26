@@ -1,0 +1,28 @@
+name: Npm-Build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+jobs:
+  android-build:
+    name: Npm-Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm install
+      - run: npm audit
+      - run: react-native info
+      - run: react-native config
+      - run: react-native bundle
+      - run: react-native doctor
