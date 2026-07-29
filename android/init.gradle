@@ -1,0 +1,26 @@
+allprojects {
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/spring/'}
+        maven { url 'https://maven.aliyun.com/repository/google/'}
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin/'}
+        maven { url 'https://maven.aliyun.com/repository/spring-plugin/'}
+        maven { url 'https://maven.aliyun.com/repository/grails-core/'}
+        maven { url 'https://maven.aliyun.com/repository/apache-snapshots/'}
+        mavenCentral()
+    }
+
+    // tasks.cyclonedxDirectBom {
+    //     // Configure JSON output (default: build/reports/cyclonedx/bom.json)
+    //     jsonOutput.set(file("../reports/cyclonedx/${project.name}-gradle-bom.json"))
+    //     // Configure XML output (default: build/reports/cyclonedx/bom.xml)
+    //     xmlOutput.set(file("../reports/cyclonedx/${project.name}-gradle-bom.xml"))
+    // }
+    // tasks.cyclonedxBom {
+    //     // Configure JSON output (default: build/reports/cyclonedx-aggregate/bom.json)
+    //     jsonOutput.set(file("../reports/cyclonedx-aggregate/${project.name}-gradle-bom.json"))
+    //     // Configure XML output (default: build/reports/cyclonedx-aggregate/bom.xml)
+    //     xmlOutput.set(file("../reports/cyclonedx-aggregate/${project.name}-gradle-bom.xml"))
+    // }    
+}

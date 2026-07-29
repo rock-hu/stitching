@@ -24,7 +24,22 @@ buildscript {
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
         classpath("org.owasp:dependency-check-gradle:12.2.2")
+        // https://genui.amap.com/docs?tab=integration#overview
+        // implementation fileTree(dir: 'libs', include: ['*.aar'])
+        // implementation 'com.amap.genui:agenui-sdk:0.1.0'
     }
 }
 
+
+plugins {
+  id "org.cyclonedx.bom" version "3.3.0" apply false
+}
+
+
+
 apply plugin: "com.facebook.react.rootproject"
+apply plugin: "org.cyclonedx.bom"
+
+allprojects {    
+    apply plugin: "org.cyclonedx.bom"
+}

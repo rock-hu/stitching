@@ -3,15 +3,18 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
+    "android": "react-native run-android --no-packager --verbose",
     "ios": "react-native run-ios",
     "lint": "eslint .",
-    "start": "react-native start",
+    "start": "rnc-cli start",
     "test": "jest",
     "dependencies:check": "rnx-align-deps",
     "dependencies:fix": "rnx-align-deps --write",
     "build:android": "cd android && ./gradlew assembleRelease",
-    "build:ios": "xcodebuild -workspace ios/stitching.xcworkspace -scheme stitching -configuration Release"
+    "build:ios": "xcodebuild -workspace ios/stitching.xcworkspace -scheme stitching -configuration Release",
+    "cyclonedx:gradle": "cd android && ./gradlew cyclonedxBom -I init.gradle",
+    "cyclonedx:npm": "npx cyclonedx-npm --validate --output-file reports/cyclonedx/npm-bom.json",
+    "cyclonedx:cocoapods": "cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^3.1.1",
